@@ -1,0 +1,2 @@
+@prefix sd: <https://spiral.example/ns#> .
+<https://github.com/muze-labs/solid-workbench-metadata> a sd:Project .

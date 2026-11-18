@@ -1,0 +1,11 @@
+@prefix sd: <https://muze.nl/ns/spiral-developer#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix project: <urn:muze-labs:solid-workbench-metadata:spiral:> .
+
+project:EVD-20261118-SWM01-3 a sd:VerificationEvidence ;
+    dcterms:identifier "EVD-20261118-SWM01-3" ;
+    sd:repositoryPath ".spiral/evidence/EVD-20261118-SWM01-3.md" ;
+    sd:status sd:Active ;
+    sd:verifies [ a sd:ArtifactReference ;
+        sd:artifact project:IMP-20261118-SWM01-2 ;
+        sd:gitCommit "7ddf4b9797949d41b2a7959574b7b2d1092d8396" ] .

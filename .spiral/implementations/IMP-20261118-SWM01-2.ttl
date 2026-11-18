@@ -5,4 +5,7 @@
 project:IMP-20261118-SWM01-2 a sd:Implementation ;
     dcterms:identifier "IMP-20261118-SWM01-2" ;
     sd:repositoryPath ".spiral/implementations/IMP-20261118-SWM01-2.md" ;
-    sd:status sd:Active .
+    sd:status sd:Active ;
+    sd:transforms [ a sd:ArtifactReference ;
+        sd:artifact project:IMP-20261118-SWM01-2 ;
+        sd:gitCommit "7ddf4b9797949d41b2a7959574b7b2d1092d8396" ] .

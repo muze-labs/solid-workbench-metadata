@@ -9,8 +9,8 @@ into Compose there.
 
 Run `cargo run --locked --manifest-path shortcut-metadata/Cargo.toml`. The
 service listens on `127.0.0.1:4175` by default. Set `METADATA_BIND` to change
-the listener. For cross-origin use, set `WORKBENCH_ORIGIN` to the exact allowed
-Workbench origin. Same-origin deployments need no CORS setting.
+the listener. Credential-free requests are allowed from any browser origin by default. Set
+`WORKBENCH_ORIGIN` to restrict browser access to one exact origin.
 
 Send JSON containing a single public HTTP(S) URL to `POST /shortcut-metadata`.
 For example:

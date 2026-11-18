@@ -17,7 +17,7 @@ use moka::sync::Cache;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::sync::Semaphore;
-use tower_http::cors::CorsLayer;
+use tower_http::cors::{Any, CorsLayer};
 use url::Url;
 
 #[derive(Clone)]
@@ -106,13 +106,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         slots: Arc::new(Semaphore::new(8)),
         budget: Arc::new(Mutex::new((Instant::now(), 0))),
     };
-    let mut app = Router::new()
+    let app = Router::new()
         .route("/healthz", get(|| async { StatusCode::NO_CONTENT }))
         .route("/shortcut-metadata", post(metadata))
         .route("/shortcut-metadata/icons/{file}", get(icon))
         .layer(DefaultBodyLimit::max(8 * 1024))
         .with_state(state);
-    if let Ok(origin) = env::var("WORKBENCH_ORIGIN") {
+    let cors = CorsLayer::new()
+        .allow_methods([Method::POST, Method::GET])
+        .allow_headers([header::CONTENT_TYPE]);
+    let cors = if let Ok(origin) = env::var("WORKBENCH_ORIGIN") {
         let parsed = Url::parse(&origin)?;
         if !matches!(parsed.scheme(), "http" | "https")
             || parsed.origin().ascii_serialization() != origin
@@ -121,16 +124,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 "WORKBENCH_ORIGIN must be a single HTTP(S) origin without a trailing slash".into(),
             );
         }
-        app = app.layer(
-            CorsLayer::new()
-                .allow_origin(origin.parse::<HeaderValue>()?)
-                .allow_methods([Method::POST, Method::GET])
-                .allow_headers([header::CONTENT_TYPE]),
-        );
-    }
+        cors.allow_origin(origin.parse::<HeaderValue>()?)
+    } else {
+        cors.allow_origin(Any)
+    };
     let address = env::var("METADATA_BIND").unwrap_or_else(|_| "127.0.0.1:4175".into());
     let listener = tokio::net::TcpListener::bind(address).await?;
     eprintln!("Shortcut metadata listening on {}", listener.local_addr()?);
-    axum::serve(listener, app).await?;
+    axum::serve(listener, app.layer(cors)).await?;
     Ok(())
 }

@@ -1,0 +1,17 @@
+name: solid-workbench-dev
+services:
+  workbench:
+    build:
+      context: ./workbench
+      additional_contexts:
+        workbench: ${WORKBENCH_DIR:-../../solid-workbench}
+    ports:
+      - "127.0.0.1:${WORKBENCH_PORT:-4174}:8080"
+    depends_on:
+      - shortcut-metadata
+
+  shortcut-metadata:
+    build: ../shortcut-metadata
+    init: true
+    read_only: true
+    mem_limit: 256m

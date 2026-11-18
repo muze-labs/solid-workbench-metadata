@@ -1,2 +1,2 @@
-@prefix sd: <https://spiral.example/ns#> .
+@prefix sd: <https://muze.nl/ns/spiral-developer#> .
 <https://github.com/muze-labs/solid-workbench-metadata> a sd:Project .
